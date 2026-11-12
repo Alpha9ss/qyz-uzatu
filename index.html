@@ -146,7 +146,73 @@
   font-size: 11px;
   margin-top: 3px;
 }
+/* Elegant wedding hosts section */
+.hosts {
+  text-align: center;
+  margin: 35px auto;
+  padding: 20px 15px;
+  max-width: 420px;
+  position: relative;
+}
 
+.hosts-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--rose);
+  margin-bottom: 12px;
+}
+
+.hosts-divider::before,
+.hosts-divider::after {
+  content: "";
+  width: 55px;
+  height: 1px;
+  background: var(--rose);
+  opacity: 0.6;
+}
+
+.hosts-divider span {
+  font-size: 19px;
+}
+
+.hosts-title {
+  font-family: "Cormorant Garamond", serif;
+  color: var(--rose-dark);
+  font-size: 25px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+.hosts-subtitle {
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 3px;
+  margin: 9px 0 12px;
+}
+
+.hosts h2 {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 32px;
+  font-weight: 500;
+  color: var(--rose-dark);
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.hosts h2 span {
+  color: var(--rose);
+  font-style: italic;
+  padding: 0 5px;
+}
+
+.hosts-bottom {
+  color: var(--rose);
+  font-size: 23px;
+  margin-top: 12px;
+}
     footer { text-align:center; padding:18px 15px 35px; color:#a77c89; font-size:10px; letter-spacing:1px; }
     footer strong { display:block; font-family:"Cormorant Garamond",serif; font-size:30px; font-weight:500; color:var(--rose-dark); letter-spacing:2px; }
     .music {
@@ -267,9 +333,16 @@
         <div class="eyebrow">Қыз ұзату тойы</div>
         <h2 class="section-title" style="margin-top:5px">Jarkhyn &amp; Janylsyn</h2>
         <div class="hosts">
-  <p>◆ Той иелері ◆</p>
-  <span>Ата-анасы</span>
-  <h2>Khuat & Bakhytgul</h2>
+  <div class="hosts-divider">
+    <span>✧</span>
+  </div>
+
+  <p class="hosts-title">Той иелері</p>
+  <p class="hosts-subtitle">Ата-анасы</p>
+
+  <h2>Khuat <span>&</span> Bakhytgul</h2>
+
+  <div class="hosts-bottom">❦</div>
 </div>
       </div>
     </div>
