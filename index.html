@@ -49,6 +49,9 @@
       box-shadow:var(--shadow);
     }
     .hero-photo img { width:100%; height:100%; object-fit:cover; display:block; }
+    .hero-photo img:not([src=""]) + .photo-placeholder {
+      display: none;
+    }
     .photo-placeholder { position:absolute; inset:0; display:grid; place-content:center; text-align:center; color:#fff; text-shadow:0 2px 12px #805767; background:linear-gradient(135deg,rgba(90,54,68,.25),rgba(255,255,255,.08)); padding:25px; }
     .photo-placeholder b { font-family:"Cormorant Garamond",serif; font-size:26px; font-weight:500; }
     .photo-placeholder span { font-size:11px; margin-top:7px; }
@@ -98,6 +101,67 @@
       display:grid; place-items:center; font-size:20px;
     }
     .music.playing .disc { animation:spin 4s linear infinite; }
+
+/* Opening invitation screen */
+.opening-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: linear-gradient(145deg, #fff0f3, #f4d5df, #e9bdcc);
+  transition: opacity .8s ease, visibility .8s ease;
+}
+
+.opening-screen.opened {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.opening-card {
+  width: min(100%, 420px);
+  padding: 45px 25px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,.8);
+  border-radius: 22px;
+  background: rgba(255,255,255,.65);
+  box-shadow: 0 15px 45px rgba(151,86,108,.15);
+}
+
+.opening-card .ornament {
+  margin: 0 0 18px;
+}
+
+.opening-card h2 {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 38px;
+  font-weight: 500;
+  color: var(--rose-dark);
+  margin: 10px 0;
+}
+
+.opening-card p {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 19px;
+  color: var(--muted);
+}
+
+.open-button {
+  margin-top: 22px;
+  padding: 13px 35px;
+  border: 0;
+  border-radius: 30px;
+  color: white;
+  background: linear-gradient(135deg, #bd788b, #d5a0af);
+  font-size: 12px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(151,86,108,.2);
+}
+
     .disc { display:block; }
     @keyframes spin { to { transform:rotate(360deg); } }
     .music-hint { position:fixed; right:max(72px,calc((100vw - 560px)/2 + 72px)); bottom:28px; z-index:9; background:#fff; color:#946475; border:1px solid var(--line); border-radius:20px; padding:5px 10px; font-size:9px; box-shadow:var(--shadow); }
@@ -105,8 +169,25 @@
     @media (max-width:380px) { .hero-photo {height:360px;} h1 {font-size:45px;} .gallery-card {height:195px;} }
   </style>
 </head>
+
 <body>
+
+  <div class="opening-screen" id="openingScreen">
+    <div class="opening-card">
+      <div class="ornament">❧ ✧ ❧</div>
+      <div class="eyebrow">ҚЫЗ ҰЗАТУ • 2026</div>
+      <h2>Janylsyn</h2>
+      <p>Сізді қуанышымыздың қадірлі қонағы болуға шақырамыз!</p>
+      <div class="small-rule"></div>
+      <button class="open-button" id="openInvitation">
+        АШУ ✧
+      </button>
+      <div class="ornament" style="margin-top:25px">❧</div>
+    </div>
+  </div>
+
   <main class="page">
+
     <header class="topbar">
       <small>ҚҰРМЕТТІ ҚОНАҚТАР!</small>
       <strong>Сіздерді Қыз ұзату<br>тойымызға шақырамыз</strong>
@@ -208,18 +289,18 @@
 
   <div class="music-hint" id="musicHint">Музыканы қосу</div>
   <button class="music" id="musicButton" aria-label="Музыканы қосу/тоқтату"><span class="disc">♫</span></button>
-  <audio id="backgroundMusic" src="assets/music/music.mp3" loop preload="none"></audio>
+  <audio id="backgroundMusic" src="assets/music/music.mp3" preload="auto"></audio>
 
   <script>
     // ===== EDIT THESE DETAILS WHEN THEY ARE CONFIRMED =====
     const EVENT_DATE = "2026-11-29T12:00:00"; // Example: "2026-12-12T17:00:00"
-    const MAP_URL = "https://maps.app.goo.gl/7HXQE4fDkTSnsUWHA";    // Paste the Google Maps link for Sky Palace
-    const RSVP_WHATSAPP = ""; // Example: "976944600302" (country code + number, no +)
+    const MAP_URL = "https://maps.app.goo.gl/vJsHeN7UgUQr1yqN9";    // Paste the Google Maps link for Sky Palace
+    const RSVP_WHATSAPP = "+97694460302"; // Example: "976944600302" (country code + number, no +)
     // ======================================================
 
     const mapLink = document.getElementById("mapLink");
     if (MAP_URL) mapLink.href = MAP_URL;
-    else mapLink.addEventListener("click", e => { e.preventDefault(); alert("Sky Palace мекенжайы нақтыланған соң карта сілтемесі қосылады."); });
+    else mapLink.addEventListener("click", e => { e.preventDefault(); alert("Dayan 2 мекенжайы нақтыланған соң карта сілтемесі қосылады."); });
 
     const countdown = document.getElementById("countdown");
     const dateNote = document.getElementById("dateNote");
@@ -235,6 +316,22 @@
       }
       tick(); setInterval(tick,1000);
     }
+    
+// Hide photo placeholders when images load successfully
+document.querySelectorAll(".hero-photo img, .gallery-card img").forEach(img => {
+  const hidePlaceholder = () => {
+    const placeholder = img.nextElementSibling;
+    if (placeholder && placeholder.classList.contains("photo-placeholder")) {
+      placeholder.style.display = "none";
+    }
+  };
+
+  if (img.complete && img.naturalWidth > 0) {
+    hidePlaceholder();
+  } else {
+    img.addEventListener("load", hidePlaceholder);
+  }
+});
 
     // Gallery auto-advances and remains swipeable on phones.
     const gallery = document.getElementById("gallery");
@@ -253,24 +350,69 @@
     gallery.addEventListener("touchstart",()=>clearInterval(galleryTimer),{passive:true});
     gallery.addEventListener("touchend",startGallery,{passive:true});
 
-    const audio = document.getElementById("backgroundMusic");
-    const musicButton = document.getElementById("musicButton");
-    const musicHint = document.getElementById("musicHint");
-    musicButton.addEventListener("click", async () => {
-      if (audio.paused) {
-        try {
-          await audio.play();
-          musicButton.classList.add("playing");
-          musicHint.textContent = "Музыка ойнап тұр";
-        } catch (err) {
-          musicHint.textContent = "assets/music/music.mp3 файлын қосыңыз";
-        }
-      } else {
-        audio.pause();
-        musicButton.classList.remove("playing");
-        musicHint.textContent = "Музыканы қосу";
-      }
-    });
+    
+const audio = document.getElementById("backgroundMusic");
+
+const MUSIC_START = 27;  // Start at 00:27
+const MUSIC_END = 200;   // End at 03:20
+
+const musicButton = document.getElementById("musicButton");
+const musicHint = document.getElementById("musicHint");
+const openButton = document.getElementById("openInvitation");
+const openingScreen = document.getElementById("openingScreen");
+
+function updateMusicButton() {
+  musicButton.classList.toggle("playing", !audio.paused);
+  musicHint.textContent = audio.paused
+    ? "Музыканы қосу"
+    : "Музыка ойнап тұр";
+}
+
+// Start music when the guest opens the invitation
+openButton.addEventListener("click", async () => {
+  openingScreen.classList.add("opened");
+
+  try {
+    audio.currentTime = MUSIC_START;
+    await audio.play();
+    updateMusicButton();
+  } catch (error) {
+    musicHint.textContent = "Музыканы қосу үшін ♫ басыңыз";
+  }
+});
+
+// Repeat only the selected music section
+audio.addEventListener("timeupdate", () => {
+  if (audio.currentTime >= MUSIC_END) {
+    audio.currentTime = MUSIC_START;
+    if (!audio.paused) {
+      audio.play().catch(() => {});
+    }
+  }
+});
+
+// Floating music button: pause and resume
+musicButton.addEventListener("click", async () => {
+  if (audio.paused) {
+    if (
+      audio.currentTime < MUSIC_START ||
+      audio.currentTime >= MUSIC_END
+    ) {
+      audio.currentTime = MUSIC_START;
+    }
+
+    try {
+      await audio.play();
+    } catch (error) {
+      musicHint.textContent = "Музыканы қосу мүмкін болмады";
+    }
+  } else {
+    audio.pause();
+  }
+
+  updateMusicButton();
+});
+
 
     document.getElementById("rsvpForm").addEventListener("submit", e => {
       e.preventDefault();
