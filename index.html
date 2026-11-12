@@ -92,6 +92,61 @@
     .submit { width:100%; border:0; border-radius:30px; background:#c69aa7; color:white; padding:12px; margin-top:15px; font-size:11px; letter-spacing:1px; cursor:pointer; }
     .submit:active { transform:scale(.99); }
     .note { font-size:10px; color:#a17c88; text-align:center; margin:10px 0 0; }
+    
+/* Calendar date card */
+.calendar-date {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin: 20px auto 0;
+  padding: 16px;
+  max-width: 340px;
+  background: #fff8fa;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+}
+
+.calendar-day {
+  min-width: 76px;
+  padding: 9px 7px;
+  background: var(--rose);
+  color: white;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.calendar-day b {
+  display: block;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 36px;
+  line-height: 1.1;
+}
+
+.calendar-day span {
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.calendar-info {
+  text-align: left;
+}
+
+.calendar-info strong {
+  display: block;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 24px;
+  color: var(--rose-dark);
+}
+
+.calendar-info span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 3px;
+}
+
     footer { text-align:center; padding:18px 15px 35px; color:#a77c89; font-size:10px; letter-spacing:1px; }
     footer strong { display:block; font-family:"Cormorant Garamond",serif; font-size:30px; font-weight:500; color:var(--rose-dark); letter-spacing:2px; }
     .music {
@@ -241,7 +296,19 @@
           <div class="count-box"><b>—</b><span>МИНУТ</span></div>
           <div class="count-box"><b>—</b><span>СЕКУНД</span></div>
         </div>
-        <div class="date-note" id="dateNote">Желтоқсан 2026 • Нақты күні мен уақыты нақтылануда</div>
+        
+<div class="calendar-date" id="dateNote">
+  <div class="calendar-day">
+    <b>29</b>
+    <span>ҚАРАША</span>
+  </div>
+  <div class="calendar-info">
+    <strong>2026 жыл</strong>
+    <span>Жексенбі</span>
+    <span>Сағат 12:00</span>
+  </div>
+</div>
+
       </div>
     </section>
 
@@ -305,7 +372,21 @@
     const dateNote = document.getElementById("dateNote");
     if (EVENT_DATE) {
       const target = new Date(EVENT_DATE).getTime();
-      dateNote.textContent = new Date(EVENT_DATE).toLocaleString("kk-KZ", {day:"numeric", month:"long", year:"numeric", hour:"2-digit", minute:"2-digit"});
+      const eventDate = new Date(EVENT_DATE);
+const months = ["ҚАҢТАР","АҚПАН","НАУРЫЗ","СӘУІР","МАМЫР","МАУСЫМ","ШІЛДЕ","ТАМЫЗ","ҚЫРКҮЙЕК","ҚАЗАН","ҚАРАША","ЖЕЛТОҚСАН"];
+const weekdays = ["Жексенбі","Дүйсенбі","Сейсенбі","Сәрсенбі","Бейсенбі","Жұма","Сенбі"];
+
+dateNote.innerHTML = `
+  <div class="calendar-day">
+    <b>${eventDate.getDate()}</b>
+    <span>${months[eventDate.getMonth()]}</span>
+  </div>
+  <div class="calendar-info">
+    <strong>${eventDate.getFullYear()} жыл</strong>
+    <span>${weekdays[eventDate.getDay()]}</span>
+    <span>Сағат 12:00</span>
+  </div>
+`;
       function tick() {
         const diff = target - Date.now();
         if (diff <= 0) { countdown.innerHTML = '<div class="count-box" style="grid-column:1/-1"><b>Қуанышты күн келді!</b></div>'; return; }
